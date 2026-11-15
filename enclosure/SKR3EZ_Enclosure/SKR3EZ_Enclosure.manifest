@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "ryanpie86",
+    "description": {
+        "": "SKR 3 EZ enclosure hanging under the Ender 3 Pro left foot rail, with lid"
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "ryanpie86",
+    "description": {
+        "": "Ender 3 Pro Sprite harness slack take-up: mast, shackle, snap pin and roller, from ../../mast_params.py"
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

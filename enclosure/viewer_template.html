@@ -1,0 +1,206 @@
+<title>SKR 3 EZ Bay Parts</title>
+<style>
+/* Layout: a full-height workbench. Top bar with the view switcher, the 3D canvas fills, a facts drawer at the bottom. */
+:root {
+  --bg: #eef1f4; --panel: #ffffff; --fg: #1d2630; --muted: #5d6b7a; --line: #d3dae2;
+  --accent: #2b6cb0; --accent-fg: #ffffff; --canvas: #e4e9ee; --grid: #c9d2db;
+  --font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #161b21; --panel: #1f262e; --fg: #e6ebf0; --muted: #98a6b5; --line: #323c47;
+  --accent: #6aa7e8; --accent-fg: #0e1419; --canvas: #1a2027; --grid: #2d3741; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #161b21; --panel: #1f262e; --fg: #e6ebf0; --muted: #98a6b5; --line: #323c47;
+  --accent: #6aa7e8; --accent-fg: #0e1419; --canvas: #1a2027; --grid: #2d3741; color-scheme: dark; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font-ui); font-size: 14px; display: flex; flex-direction: column; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  border-bottom: 1px solid var(--line); background: var(--panel); }
+header h1 { font-size: 15px; font-weight: 600; margin: 0; letter-spacing: 0.01em; }
+header .sub { color: var(--muted); font-size: 12.5px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+nav button { font: inherit; font-size: 13px; padding: 6px 11px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--fg); cursor: pointer; }
+nav button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+nav button:focus-visible, .toggles label:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+main { flex: 1; min-height: 320px; position: relative; display: flex; flex-direction: column; }
+#stage { flex: 1; min-height: 300px; background: var(--canvas); touch-action: none; position: relative; }
+#stage canvas { display: block; width: 100%; height: 100%; }
+#stage [hidden] { display: none !important; }
+#sectionImg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #ffffff; }
+.clip { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; padding: 5px 9px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); }
+.clip input[type=range] { width: 140px; }
+.clip output { font-family: var(--font-mono); min-width: 5ch; }
+.hud { position: absolute; left: max(12px, env(safe-area-inset-left, 0px)); top: 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+.toggles label { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding: 5px 9px; border-radius: 6px; background: var(--panel); border: 1px solid var(--line); cursor: pointer; }
+.hint { position: absolute; right: max(12px, env(safe-area-inset-right, 0px)); bottom: 10px; font-size: 12px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); padding: 4px 8px; border-radius: 6px; }
+aside { border-top: 1px solid var(--line); background: var(--panel); padding-block: 10px 14px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+aside h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; margin: 0; font-variant-numeric: tabular-nums; }
+dt { color: var(--muted); } dd { margin: 0; font-family: var(--font-mono); font-size: 13px; min-width: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 10px; font-size: 12.5px; color: var(--muted); }
+.legend span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--sw); }
+@media (max-width: 520px) { dl { grid-template-columns: 1fr; } dt { margin-top: 4px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap">
+<header>
+  <div><h1>SKR 3 EZ bay parts</h1><div class="sub">Ender 3 Pro · enclosure, lid, feet and the mount cross-section, generated from the Fusion scripts</div></div>
+  <nav id="views" aria-label="View"></nav>
+</header>
+<main>
+  <div id="stage">
+    <div class="hud toggles">
+      <label><input type="checkbox" id="ctx" checked> Frame rails</label>
+      <label><input type="checkbox" id="refs" checked> Board / parts</label>
+      <label><input type="checkbox" id="wire"> Edges</label>
+      <span class="clip"><label for="clipOn"><input type="checkbox" id="clipOn"> Clip at Y</label><input type="range" id="clipY" min="0" max="100" step="0.5" value="28"><output id="clipOut">28 mm</output></span>
+    </div>
+    <img id="sectionImg" alt="Cross-section through the mount" hidden>
+    <div class="hint">Drag to orbit · scroll or pinch to zoom · right-drag to pan</div>
+  </div>
+  <aside>
+    <h2 id="factsTitle">Enclosure in the bay</h2>
+    <dl id="facts"></dl>
+    <div class="legend">
+      <span style="--sw:#3f7fc4">printed part</span><span style="--sw:#d9772f">lid</span><span style="--sw:#7d8792">frame rail / feet</span><span style="--sw:#2e8b57">PCB</span><span style="--sw:#b23b3b">EZ driver row</span><span style="--sw:#555555">fan</span>
+    </div>
+  </aside>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const DATA = __DATA__;
+const stage = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, 1, 5000);
+camera.up.set(0, 0, 1);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x667788, 0.9));
+const sun = new THREE.DirectionalLight(0xffffff, 0.7); sun.position.set(-120, -200, 260); scene.add(sun);
+const sun2 = new THREE.DirectionalLight(0xffffff, 0.25); sun2.position.set(200, 120, 80); scene.add(sun2);
+
+function parseSTL(b64) {
+  const bin = atob(b64); const buf = new ArrayBuffer(bin.length); const u8 = new Uint8Array(buf);
+  for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+  const dv = new DataView(buf); const n = dv.getUint32(80, true);
+  const pos = new Float32Array(n * 9);
+  for (let i = 0; i < n; i++) { const o = 84 + i * 50 + 12; for (let k = 0; k < 9; k++) pos[i * 9 + k] = dv.getFloat32(o + k * 4, true); }
+  return pos;
+}
+const geoCache = {};
+function geometry(key, installed) {
+  const ck = key + (installed ? ':i' : '');
+  if (geoCache[ck]) return geoCache[ck];
+  let pos = parseSTL(DATA.models[key].stl);
+  if (installed) {           // lid flipped over onto the base: z' = H - z, winding reversed
+    const H = DATA.lid_total_h, out = new Float32Array(pos.length);
+    for (let i = 0; i < pos.length; i += 9) {
+      for (let v = 0; v < 3; v++) { const s = i + v * 3, d = i + (2 - v) * 3; out[d] = pos[s]; out[d + 1] = pos[s + 1]; out[d + 2] = H - pos[s + 2]; }
+    }
+    pos = out;
+  }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.computeVertexNormals();
+  return geoCache[ck] = g;
+}
+const KIND = { rail: 0x7d8792, foot: 0x9aa4ae, yrail: 0x9aa4ae, pcb: 0x2e8b57, drivers: 0xb23b3b, fan: 0x555555 };
+// live section: one clipping plane perpendicular to Y, applied to every material
+const clipPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 0);   // keeps the side with y <= constant
+renderer.localClippingEnabled = true;
+const clipOn = document.getElementById('clipOn'), clipY = document.getElementById('clipY'), clipOut = document.getElementById('clipOut');
+clipY.min = DATA.clip_range[0]; clipY.max = DATA.clip_range[1];
+function clipMaterial(m) { m.clippingPlanes = [clipPlane]; m.side = THREE.DoubleSide; m.clipShadows = true; return m; }
+function updateClip() {
+  const on = clipOn.checked, y = parseFloat(clipY.value);
+  clipPlane.constant = y; clipOut.textContent = y.toFixed(0) + ' mm';
+  scene.traverse(o => { if (o.material) { o.material.clippingPlanes = on ? [clipPlane] : null; o.material.needsUpdate = true; } });
+}
+clipOn.addEventListener('change', updateClip); clipY.addEventListener('input', updateClip);
+function boxMesh(b) {
+  const mat = clipMaterial(new THREE.MeshStandardMaterial({ color: KIND[b.kind], roughness: 0.8, transparent: b.kind === 'yrail', opacity: b.kind === 'yrail' ? 0.55 : 1, side: THREE.DoubleSide, flatShading: true }));
+  if (b.model) return new THREE.Mesh(geometry(b.model, false), mat);   // true-profile context part from the twin
+  const s = [b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]];
+  const m = new THREE.Mesh(new THREE.BoxGeometry(s[0], s[1], s[2]), mat);
+  m.position.set(b.min[0] + s[0] / 2, b.min[1] + s[1] / 2, b.min[2] + s[2] / 2);
+  return m;
+}
+let group = null, ctxGroup = null, refGroup = null, wireGroup = null;
+let target = new THREE.Vector3(), radius = 300, theta = -0.9, phi = 1.05;
+function fit(box) {
+  box.getCenter(target); const size = new THREE.Vector3(); box.getSize(size);
+  radius = Math.max(size.x, size.y, size.z) * 1.6 + 40;
+}
+const sectionImg = document.getElementById('sectionImg');
+sectionImg.src = 'data:image/png;base64,' + DATA.section_png;
+function show(id) {
+  const v = DATA.views.find(x => x.id === id);
+  sectionImg.hidden = !v.image;
+  renderer.domElement.hidden = !!v.image;
+  document.querySelector('.hud').hidden = !!v.image;
+  document.querySelector('.hint').hidden = !!v.image;
+  [group, ctxGroup, refGroup, wireGroup].forEach(g => g && scene.remove(g));
+  group = new THREE.Group(); ctxGroup = new THREE.Group(); refGroup = new THREE.Group(); wireGroup = new THREE.Group();
+  const bbox = new THREE.Box3();
+  v.parts.forEach(([key, mode]) => {
+    const g = geometry(key, mode === 'installed');
+    const mesh = new THREE.Mesh(g, clipMaterial(new THREE.MeshStandardMaterial({ color: DATA.models[key].color, roughness: 0.65, metalness: 0.05, flatShading: true, side: THREE.DoubleSide })));
+    group.add(mesh); bbox.expandByObject(mesh);
+    wireGroup.add(new THREE.LineSegments(new THREE.EdgesGeometry(g, 25), new THREE.LineBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.35 })));
+  });
+  v.context.forEach(b => ctxGroup.add(boxMesh(b)));
+  v.refs.forEach(b => refGroup.add(boxMesh(b)));
+  scene.add(group); scene.add(ctxGroup); scene.add(refGroup); scene.add(wireGroup);
+  applyToggles(); updateClip(); if (!v.image) fit(bbox);
+  document.querySelectorAll('#views button').forEach(b => b.setAttribute('aria-pressed', b.dataset.id === id));
+  document.getElementById('factsTitle').textContent = v.label;
+  const dl = document.getElementById('facts'); dl.innerHTML = '';
+  DATA.facts[id].forEach(([k, val]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = val; dl.append(dt, dd); });
+  try { localStorage.setItem('skr3ez-view', id); } catch (e) {}
+}
+function applyToggles() {
+  ctxGroup.visible = document.getElementById('ctx').checked;
+  refGroup.visible = document.getElementById('refs').checked;
+  wireGroup.visible = document.getElementById('wire').checked;
+}
+['ctx', 'refs', 'wire'].forEach(i => document.getElementById(i).addEventListener('change', applyToggles));
+const nav = document.getElementById('views');
+DATA.views.forEach(v => { const b = document.createElement('button'); b.textContent = v.label; b.dataset.id = v.id; b.addEventListener('click', () => show(v.id)); nav.appendChild(b); });
+
+// orbit controls: left-drag orbit, right-drag / shift-drag pan, wheel or pinch zoom
+let drag = null, pinch = null;
+const el = renderer.domElement;
+el.addEventListener('contextmenu', e => e.preventDefault());
+el.addEventListener('pointerdown', e => { el.setPointerCapture(e.pointerId); drag = { x: e.clientX, y: e.clientY, pan: e.button === 2 || e.shiftKey, id: e.pointerId }; });
+el.addEventListener('pointerup', e => { if (drag && drag.id === e.pointerId) drag = null; });
+el.addEventListener('pointermove', e => {
+  if (!drag || drag.id !== e.pointerId) return;
+  const dx = e.clientX - drag.x, dy = e.clientY - drag.y; drag.x = e.clientX; drag.y = e.clientY;
+  if (drag.pan) {
+    const right = new THREE.Vector3().subVectors(camera.position, target).cross(camera.up).normalize();
+    const up = new THREE.Vector3().copy(camera.up);
+    target.addScaledVector(right, dx * radius * 0.0015).addScaledVector(up, dy * radius * 0.0015);
+  } else { theta -= dx * 0.008; phi = Math.min(Math.PI - 0.05, Math.max(0.05, phi - dy * 0.008)); }
+});
+el.addEventListener('wheel', e => { e.preventDefault(); radius *= Math.exp(e.deltaY * 0.0012); radius = Math.min(3000, Math.max(40, radius)); }, { passive: false });
+el.addEventListener('touchstart', e => { if (e.touches.length === 2) { drag = null; pinch = dist(e.touches); } }, { passive: true });
+el.addEventListener('touchmove', e => { if (e.touches.length === 2 && pinch) { const d = dist(e.touches); radius *= pinch / d; pinch = d; e.preventDefault(); } }, { passive: false });
+el.addEventListener('touchend', () => { pinch = null; });
+function dist(t) { const dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY; return Math.hypot(dx, dy); }
+
+function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize', resize);
+function themeClear() { renderer.setClearColor(new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--canvas').trim() || '#e4e9ee')); }
+themeClear();
+if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeClear);
+new MutationObserver(themeClear).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+function frame() {
+  camera.position.set(target.x + radius * Math.sin(phi) * Math.cos(theta), target.y + radius * Math.sin(phi) * Math.sin(theta), target.z + radius * Math.cos(phi));
+  camera.lookAt(target); renderer.render(scene, camera); requestAnimationFrame(frame);
+}
+resize();
+let start = 'hung'; try { const s = localStorage.getItem('skr3ez-view'); if (s && DATA.views.some(v => v.id === s)) start = s; } catch (e) {}
+show(start); frame();
+</script>

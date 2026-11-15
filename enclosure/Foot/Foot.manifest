@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "ryanpie86",
+    "description": {
+        "": "TPU foot that slides onto an Ender 3 Pro foot rail (reads its height from ../SKR3EZ_Enclosure)"
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

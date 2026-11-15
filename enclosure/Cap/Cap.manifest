@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "ryanpie86",
+    "description": {
+        "": "End cap for the Ender 3 Pro foot rail with pegs into its bores and a skirt over the foot"
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

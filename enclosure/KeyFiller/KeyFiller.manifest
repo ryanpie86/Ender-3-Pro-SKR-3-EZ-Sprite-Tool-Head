@@ -1,0 +1,10 @@
+{
+    "autodeskProduct": "Fusion",
+    "type": "script",
+    "author": "ryanpie86",
+    "description": {
+        "": "Short slot-key filler between the foot and the enclosure hanger bar (set FILLER_L after measuring)"
+    },
+    "supportedOS": "windows|mac",
+    "editEnabled": true
+}

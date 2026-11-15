@@ -1,0 +1,41 @@
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install manifold3d==3.5.4 trimesh==5.2.0 numpy jinja2
+      - name: Klipper config lint
+        run: python tools/check_klipper_cfg.py config/printer.cfg config/macros.cfg config/adxl.cfg config/speed_test.cfg config/KAMP_Settings.cfg config/shell.cfg
+      - name: Fusion scripts against the mock adsk API
+        run: |
+          python enclosure/tests/run_mock.py SKR3EZ_Enclosure
+          python enclosure/tests/run_mock.py Foot
+          python enclosure/tests/run_mock.py Cap
+          python enclosure/tests/run_mock.py KeyFiller
+      - name: Geometry fit checks (enclosure + feet)
+        run: |
+          python enclosure/generate_stl.py --no-render
+          python enclosure/generate_foot_stl.py --no-render
+          python enclosure/generate_cap_stl.py --no-render
+          python enclosure/generate_filler_stl.py --no-render
+      - name: STLs and viewer in the repo match the scripts
+        run: |
+          python enclosure/build_viewer.py
+          git diff --stat --exit-code -- enclosure/stl enclosure/viewer.html
+      - name: Cable mast geometry checks, Fusion mock, STLs and viewer up to date
+        run: |
+          python cable_mast/cable_mast.py --no-render
+          python cable_mast/build_viewer.py
+          python cable_mast/Fusion/tests/run_mock.py
+          git diff --stat --exit-code -- cable_mast/out/*.stl cable_mast/out/viewer.html
